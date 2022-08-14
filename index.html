@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>VR Tour</title>
+    <meta name="description" content="VR Tour">
+    <!--<link rel="stylesheet" type="text/css" href="index.css">-->
+    <!--<script src="aframe-master.min.js "></script> -->
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js "></script>
+  
+
+    <script>
+      AFRAME.registerComponent('hotspots',{
+        init:function(){
+            this.el.addEventListener('reloadspots',function(evt){
+            
+            //get the entire current spot group and scale it to 0
+            var currspotgroup=document.getElementById(evt.detail.currspots);
+            currspotgroup.setAttribute("scale","0 0 0");
+            
+            //get the entire new spot group and scale it to 1
+            var newspotgroup=document.getElementById(evt.detail.newspots);
+            newspotgroup.setAttribute("scale","1 1 1");
+          });
+        }
+      });
+      AFRAME.registerComponent('spot',{
+        schema:{
+          linkto:{type:"string",default:""},
+          spotgroup:{type:"string",default:""}
+        },
+        init:function(){
+          
+          //add image source of hotspot icon
+          this.el.setAttribute("src","#hotspot");
+          //make the icon look at the camera all the time
+          //this.el.setAttribute("look-at","#cam");
+          
+          var data=this.data;
+          
+          this.el.addEventListener('click',function(){
+            //set the skybox source to the new image as per the spot
+            var sky=document.getElementById("skybox");
+            sky.setAttribute("src",data.linkto);
+            
+            var spotcomp=document.getElementById("spots");
+            var currspots=this.parentElement.getAttribute("id");
+           // if(sky.getAttribute("src")=="#point1"||sky.getAttribute("src")=="#point2"||sky.getAttribute("src")=="#point3"||sky.getAttribute("src")=="#point4"||sky.getAttribute("src")=="#point5")
+             // {
+              //  sky.getAttribute("rotation","0 0 -10");
+              //}
+            if(sky.getAttribute("src")=="#point6"||sky.getAttribute("src")=="#point7"||sky.getAttribute("src")=="#point8"){
+               sky.setAttribute("rotation","0 0 0");
+               }
+            else{
+              sky.setAttribute("rotation","0 0 -10");
+            }
+           
+            //create event for spots component to change the spots data
+            spotcomp.emit('reloadspots',{newspots:data.spotgroup,currspots:currspots});
+            
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <a-assets>
+       <!--<img id="point1" src="https://cdn.glitch.com/2087dfa6-bd02-4451-a189-36095a66f386%2Fpoint1.jpg?1545394470968"/> 
+        <img id="point2" src="https://cdn.glitch.com/2087dfa6-bd02-4451-a189-36095a66f386%2Fpoint2.jpg?1545394471327"/> 
+        <img id="point3" src="https://cdn.glitch.com/2087dfa6-bd02-4451-a189-36095a66f386%2Fpoint3.jpg?1545394470620"/> 
+        <img id="point4" src="https://cdn.glitch.com/2087dfa6-bd02-4451-a189-36095a66f386%2Fpoint4.jpg?1545394470510"/>--> 
+        
+        <img id="hotspot" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2Fup-arrow-hi.png?v=1581402610111"/>
+        
+        <!--point1= GF_mid; point2= GF_left; point3=GF_right -->
+        <img id="point1" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2F1%20Middle.jpg?v=1581068538139"/> 
+        <img id="point2" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2F2%20Middle.jpg?v=1581072716514"/>
+        <img id="point3" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2F3%20Middle.jpg?v=1581073145808"/>
+        
+        <!--point4= M_left; point5= M_right -->
+        <img id="point4" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2FMF_Center.jpg?v=1581328714717"/>
+        <img id="point5" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2FMF_side1.jpg?v=1581334095504"/>
+        
+        <!--point6= FF_Mid; point7= FF_left; point8= FF_Right-->
+        <img id="point6" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2FFF_Center.jpg?v=1581074845903"/>
+        <img id="point7" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2FFF_Side2.jpg?v=1581074849595"/>
+        <img id="point8" src="https://cdn.glitch.com/99b8d6d3-2aea-4e9a-ae7f-5911bab675fe%2FFF_Side1.jpg?v=1581074847797"/>
+        
+        <img id="logo" src="https://cdn.glitch.com/2087dfa6-bd02-4451-a189-36095a66f386%2Fup-arrow.png?v=1545397127546"/>
+        <img id="mimarlogo" src="https://cdn.glitch.com/673a365e-8ddf-408d-8afa-1c4d24e355c0%2FCircularLogo.png?v=1582004972229"/>
+        <img id="mimarlogo1" src="https://cdn.glitch.com/673a365e-8ddf-408d-8afa-1c4d24e355c0%2FCircularLogoM.png?v=1582004981176"/>
+     
+        
+      </a-assets>
+      
+      <a-entity id="spots" hotspots>
+        <a-entity id="group-point1">
+          <a-image spot="linkto:#point2;spotgroup:group-point2" width = ".5" height = ".75" position="-3.50 0 -1.75" rotation="95 245 0" ></a-image>
+          <a-image spot="linkto:#point3;spotgroup:group-point3" width = ".75" height = "1" position="6 -1.5 1.2" rotation="90 65 0"></a-image>
+          <a-image spot="linkto:#point4;spotgroup:group-point4" width = ".75" height = ".75" position="-7 2.35 -3.5" rotation="0 90 3" ></a-image>
+          <a-image spot="linkto:#point5;spotgroup:group-point5" width = ".75" height = ".75" position="9 2.5 2.5" rotation="10 90 0" ></a-image>
+        
+        </a-entity>
+        <a-entity id="group-point2" scale="0 0 0">
+          <a-image spot="linkto:#point1;spotgroup:group-point1" width = ".5" height = ".75" position="0.5 0 3" rotation="90 -35 0"></a-image>
+          <a-image spot="linkto:#point3;spotgroup:group-point3" width = ".6" height = ".7" position="-2.5 0 -2" rotation="90 270 0" ></a-image>
+          <a-image spot="linkto:#point5;spotgroup:group-point5" width = ".35" height = ".35" position="-3.10 2 -1.5" rotation="0 270 0" ></a-image>
+          <a-image spot="linkto:#point4;spotgroup:group-point4" width = ".5" height = ".5" position="-1.75 2 4.5" rotation="0 -30 0"></a-image>
+          
+          <!--<a-image spot="linkto:#point3;spotgroup:group-point3" position="-10 -3 -10"></a-image>-->
+        </a-entity>
+        <a-entity id="group-point3" scale="0 0 0">
+          <!--<a-image spot="linkto:#point2;spotgroup:group-point2" position="10 0 3"></a-image>-->
+          <a-image spot="linkto:#point1;spotgroup:group-point1" width = ".75" height = "1" position="-3 0 -3" rotation="90 250 0"></a-image>
+          <a-image spot="linkto:#point2;spotgroup:group-point2" width = ".75" height = "1" position="-3 0 3" rotation="90 310 0"></a-image>
+          <a-image spot="linkto:#point5;spotgroup:group-point5" width = ".35" height = ".35" position="-3 2 3" rotation="0 310 0"></a-image>
+          <a-image spot="linkto:#point4;spotgroup:group-point4" width = ".35" height = ".35" position="-3 1.75 -2.5" rotation="0 250 0"></a-image>
+          
+        </a-entity>
+        <a-entity id="group-point4" scale="0 0 0">
+          <a-image spot="linkto:#point1;spotgroup:group-point1" width = ".75" height = ".75" position="-2 1.6 -8" rotation="0 180 180"></a-image>
+          <a-image spot="linkto:#point6;spotgroup:group-point6" width = ".75" height = ".75" position="-2 2.5 -8" rotation="0 180 0"></a-image>
+          <a-image spot="linkto:#point2;spotgroup:group-point2" width = ".5" height = ".5" position="-8 1.6 -0.5" rotation="0 270 180"></a-image>
+          <a-image spot="linkto:#point7;spotgroup:group-point7" width = ".5" height = ".5" position="-8 2.1 -0.5" rotation="0 270 0"></a-image>
+          <a-image spot="linkto:#point5;spotgroup:group-point5" width = "1" height = "1.25" position="-5 -0.75 1.5" rotation="90 240 270"></a-image>
+          
+        </a-entity>
+        
+        <a-entity id="group-point5" scale="0 0 0">
+          <a-image spot="linkto:#point3;spotgroup:group-point3" width = ".35" height = ".35" position="-0.70 1.8 -5.75" rotation="0 0 180"></a-image>
+          <a-image spot="linkto:#point6;spotgroup:group-point6" width = ".35" height = ".35" position="-0.70 2.2 -5.75" rotation="0 0 0"></a-image>
+          <a-image spot="linkto:#point1;spotgroup:group-point1" width = ".35" height = ".35" position="-4.70 1.6 1" rotation="0 270 180"></a-image>
+          <a-image spot="linkto:#point6;spotgroup:group-point6" width = ".35" height = ".35" position="-4.70 2 1" rotation="0 270 0"></a-image>
+          <a-image spot="linkto:#point4;spotgroup:group-point4" width = "0.75" height = "0.75" position="-3 0 2.5" rotation="90 270 270"></a-image>
+          
+          <!--<a-image spot="linkto:#point3;spotgroup:group-point3" position="-10 -3 -10"></a-image>-->
+        </a-entity>
+        
+        <a-entity id="group-point6" scale="0 0 0">
+        <a-image spot="linkto:#point8;spotgroup:group-point8" width = "1" height = "1.35" position="-1 0 -7.5" rotation="85 200 0"></a-image>
+        <a-image spot="linkto:#point5;spotgroup:group-point5" width = ".75" height = ".75" position="-8 1.8 -4.5" rotation="180 90 0"></a-image>
+        <a-image spot="linkto:#point7;spotgroup:group-point7" width = ".75" height = ".75" position="3.3 0 1.25" rotation="90 55 0"></a-image>
+        
+        
+        </a-entity>
+        
+        <a-entity id="group-point7" scale="0 0 0">
+        <a-image spot="linkto:#point6;spotgroup:group-point6" width = ".75" height = ".75" position="-4 0 -0.2" rotation="90 270 0"></a-image>
+        <a-image spot="linkto:#point5;spotgroup:group-point5" width = ".5" height = ".5" position="-8 1.5 0.75" rotation="180 90 0"></a-image>
+        
+        
+        </a-entity>
+        
+        <a-entity id="group-point8" scale="0 0 0">
+        <a-image spot="linkto:#point6;spotgroup:group-point6" width = ".75" height = ".75" position="-1.5 0 1.5" rotation="90 55 0"></a-image>
+          
+        
+        </a-entity>
+      </a-entity>
+      
+      <a-sky id="skybox" src="#point1" rotation="0 0 -10">
+      <a-image src="#mimarlogo" rotation="90 200 0" position="0 -1 0" width="1" height="1"></a-image>
+      <a-image src="#mimarlogo1" rotation="90 200 180" position="1 5 0" width="1" height="1"></a-image>
+      
+      </a-sky>
+     
+      <a-entity camera id="cam" position="0 1.6 0" look-controls>
+        <a-entity cursor="fuse:true;fuseTimeout:500"
+                  geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.02"
+                  position="0 0 -1.8"
+                  material="shader:flat;color:#0080ff" 
+                  animation__mouseenter="property:scale;from:1 1 1;to:3 3 3;startEvents:mouseenter;endEvents:mouseleave;dir:reverse;dur:500;loop:0">
+                 
+        </a-entity>
+        <!--<a-image  class="img" src="#logo" position=".7 1.2 -1.8" width=".25" height=".25"> -->
+      </a-entity>
+      
+    </a-scene>
+  </body>
+</html>
+  
